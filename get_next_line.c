@@ -6,102 +6,51 @@
 /*   By: daugier <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/29 15:48:42 by daugier           #+#    #+#             */
-/*   Updated: 2016/04/07 15:05:21 by daugier          ###   ########.fr       */
+/*   Updated: 2016/05/21 19:21:45 by daugier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
 
-char	*strjoin(char *s1, char *s2)
+int		read_next(int fd, char **buffer)
 {
-	char	*ptr;
-	int		i;
-	int		j;
+	int		ret;
+	char	*buf;
 
-	if (!(ptr = (char *)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1))))
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (s1[i])
-		ptr[j++] = s1[i++];
-	i = 0;
-	free(s1);
-	while (s2[i])
-		ptr[j++] = s2[i++];
-	ptr[j] = '\0';
-	return (ptr);
-}
-
-
-int		read_next(int fd, char *buf, char **s2)
-{
-	int ret;
-
-
-	bzero(buf, BUF_SIZE);
+	if (!(*buffer = (char*)malloc(sizeof(char) * 1)))
+		return (0);
+	if (!(buf = (char*)malloc(sizeof(char) * BUF_SIZE + 1)))
+		return (0);
 	while ((ret = read(fd, buf, BUF_SIZE)))
-	{	
+	{
 		buf[ret] = '\0';
-		*s2 = strjoin(*s2, buf);
-		bzero(buf, BUF_SIZE);
+		*buffer = ft_strjoin(*buffer, buf);
 	}
 	return (ret);
 }
 
 int		get_next_line(int const fd, char **line)
 {
-	/*static t_next	next;*/
-	static int		j = 0;
-	static int		bb = 0;
-	static int		i = 0;
-	char			buf[BUF_SIZE + 1];
-	static char		*s2;
+	static char		*buffer[MAX_FD];
 
-	if (fd < 0 || BUF_SIZE < 1 || fd > 255 || line == NULL)
+	if (fd < MIN_FD || BUF_SIZE < 1 || line == NULL || read(fd, "LOL", 0))
 		return (-1);
-	if (!bb)
+	if (!buffer[fd])
 	{
-		if (!(s2 = (char *)malloc(sizeof(char) * 1)))
-			return (0);
-		s2[0] = '\0';
-		if ((read_next(fd, buf, &s2)) < 0)
+		if (read_next(fd, &buffer[fd]) == -1)
 			return (-1);
-		bb = 1;
 	}
-	i = j;
-	if (!s2[j])
+	if (!(*line = (char*)malloc(sizeof(char) * 1)))
 		return (0);
-	while (s2[j] != '\n' && s2[j])
-		j++;
-	i = (j - i);
-	if (!(*line = (char *)malloc(sizeof(char) * i + 1)))
+	if (!*buffer[fd])
 		return (0);
-	*line = ft_strncpy(*line, &(s2[j - i]), i);
-	if (s2[j] == '\n')
+	while (*buffer[fd] != '\n' && *buffer[fd] != '\0')
 	{
-		j++;
-		i++;
+		*line = ft_charjoin(*line, *buffer[fd]);
+		buffer[fd]++;
 	}
+	if (*buffer[fd] == '\n')
+		buffer[fd]++;
 	return (1);
 }
-
-/*int		main(int ac, char **av)
-{
-	char	*line;
-	int		fd;
-
-	fd = open(av[1], O_RDONLY);
-	if (fd == -1)
-	{
-		printf("MAUVAIS FICHIER");
-		return (0);
-	}
-	while (get_next_line((int const)fd, &line))
-	{
-		ft_putstr("line :");
-		ft_putendl(line);
-		free(line);
-	}
-	return (0);
-}*/
