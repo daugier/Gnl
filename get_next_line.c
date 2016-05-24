@@ -6,7 +6,7 @@
 /*   By: daugier <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/29 15:48:42 by daugier           #+#    #+#             */
-/*   Updated: 2016/05/21 22:47:33 by daugier          ###   ########.fr       */
+/*   Updated: 2016/05/24 22:59:30 by daugier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,36 +15,41 @@
 static int		read_next(int fd, char **buffer)
 {
 	int		ret;
-	char	*buf;
+	char	buf[BUF_SIZE + 1];
 
 	if (!(*buffer = (char*)malloc(sizeof(char) * 1)))
 		return (0);
-	if (!(buf = (char*)malloc(sizeof(char) * BUF_SIZE + 1)))
-		return (0);
+	*buffer[0] = '\0';
 	while ((ret = read(fd, buf, BUF_SIZE)))
+	{
+		buf[ret] = '\0';
 		*buffer = ft_strjoin(*buffer, buf);
+	}
 	return (ret);
 }
 
 int				get_next_line(int const fd, char **line)
 {
 	static char		*buffer[MAX_FD];
+	int				i;
+	int				bsn;
 
-	if (fd < MIN_FD || BUF_SIZE < 1 || line == NULL || read(fd, "LOL", 0))
+	i = 0;
+	bsn = 0;
+	if (fd < MIN_FD || BUF_SIZE < 1 || line == NULL || read(fd, "", 0))
 		return (-1);
 	if (!buffer[fd])
-	{
 		if (read_next(fd, &buffer[fd]) == -1)
 			return (-1);
-	}
-	if (!(*line = (char*)malloc(sizeof(char) * 1)) || !*buffer[fd])
+	if (buffer[fd][i] == '\0')
 		return (0);
-	while (*buffer[fd] != '\n' && *buffer[fd] != '\0')
-	{
-		*line = ft_charjoin(*line, *buffer[fd]);
-		buffer[fd]++;
-	}
-	if (*buffer[fd] == '\n')
-		buffer[fd]++;
+	while (buffer[fd][i] != '\n' && buffer[fd][i] != '\0')
+		i++;
+	if (!(*line = (char*)malloc(sizeof(char) * i + 1)))
+		return (0);
+	*line = ft_strncpy(*line, buffer[fd], i);
+	if (buffer[fd][i] == '\n')
+		i++;
+	buffer[fd] = ft_strsub(buffer[fd], i, ft_strlen(buffer[fd] + i));
 	return (1);
 }
