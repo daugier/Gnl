@@ -6,7 +6,7 @@
 /*   By: daugier <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/29 15:48:42 by daugier           #+#    #+#             */
-/*   Updated: 2016/06/16 16:15:23 by daugier          ###   ########.fr       */
+/*   Updated: 2016/06/16 16:54:53 by daugier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 static int		read_next(int fd, char **buffer)
 {
 	int		ret;
-	char	buf[BUF_SIZE + 1];
+	char	buf[BUFF_SIZE + 1];
 
 	if (!(*buffer = (char*)malloc(sizeof(char) * 1)))
 		return (0);
 	*buffer[0] = '\0';
-	while ((ret = read(fd, buf, BUF_SIZE)) > 0)
+	while ((ret = read(fd, buf, BUFF_SIZE)) > 0)
 	{
 		buf[ret] = '\0';
 		*buffer = ft_strjoin(*buffer, buf);
@@ -39,7 +39,7 @@ int				get_next_line(int const fd, char **line)
 	int				i;
 
 	i = 0;
-	if (fd < MIN_FD || BUF_SIZE < 1 || line == NULL)
+	if (fd < MIN_FD || BUFF_SIZE < 1 || line == NULL)
 		return (-1);
 	if (!buffer[fd])
 		if (read_next(fd, &buffer[fd]) == -1)
