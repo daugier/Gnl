@@ -6,7 +6,7 @@
 /*   By: daugier <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/26 21:36:34 by daugier           #+#    #+#             */
-/*   Updated: 2016/06/16 16:11:25 by daugier          ###   ########.fr       */
+/*   Updated: 2016/06/16 16:40:42 by daugier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
-# include "get_next_line.h"
 
 typedef struct		s_list
 {
@@ -27,7 +26,6 @@ typedef struct		s_list
 }					t_list;
 
 int					ft_lenchar(char *str, char c);
-char				*ft_getmap(int fd);
 int					ft_sqrt(int nb);
 void				ft_print_tab(char **tab);
 int					ft_power(int nb, int power);
