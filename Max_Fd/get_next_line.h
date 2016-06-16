@@ -6,14 +6,14 @@
 /*   By: daugier <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/29 15:40:39 by daugier           #+#    #+#             */
-/*   Updated: 2016/06/10 22:48:26 by daugier          ###   ########.fr       */
+/*   Updated: 2016/06/16 16:44:04 by daugier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-# define BUF_SIZE 1000
+# define BUFF_SIZE 1000
 # define MAX_FD 256
 # define MIN_FD 0
 
