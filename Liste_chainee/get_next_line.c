@@ -6,7 +6,7 @@
 /*   By: daugier <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/29 15:48:42 by daugier           #+#    #+#             */
-/*   Updated: 2016/06/17 17:32:07 by daugier          ###   ########.fr       */
+/*   Updated: 2016/06/18 23:41:30 by daugier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,32 @@ static t_next	*ft_get_good_list(t_next **list, int fd)
 	return (cpy);
 }
 
+static int		ft_free(t_next **list, int fd)
+{
+	t_next	*cpy;
+	t_next	*tmp;
+
+	cpy = *list;
+	tmp = *list;
+	if ((*list)->fd == fd)
+		(*list) = (*list)->next;
+	else
+	{
+		while (cpy->next->fd != fd && cpy->next)
+			cpy = cpy->next;
+		tmp = cpy->next;
+		cpy->next = cpy->next->next;
+	}
+	free(tmp->buff);
+	free(tmp);
+	tmp = NULL;
+	return (0);
+}
+
 static int		read_next(int fd, char **buffer)
 {
 	int		ret;
+	char	*tmp;
 	char	buf[BUFF_SIZE + 1];
 
 	if (!(*buffer = (char*)malloc(sizeof(char) * 1)))
@@ -49,7 +72,9 @@ static int		read_next(int fd, char **buffer)
 	while ((ret = read(fd, buf, BUFF_SIZE)) > 0)
 	{
 		buf[ret] = '\0';
-		*buffer = ft_strjoin(*buffer, buf);
+		tmp = *buffer;
+		*buffer = ft_strjoin(tmp, buf);
+		free(tmp);
 	}
 	if (ret == -1)
 	{
@@ -64,16 +89,17 @@ int				get_next_line(int const fd, char **line)
 	static t_next	*list = NULL;
 	int				i;
 	t_next			*cpy;
+	char			*tmp;
 
 	i = 0;
-	if (fd < MIN_FD || BUFF_SIZE < 1 || line == NULL)
+	if (fd < 0 || !line)
 		return (-1);
 	cpy = ft_get_good_list(&list, fd);
 	if (!cpy->buff)
 		if (read_next(fd, &cpy->buff) == -1)
 			return (-1);
 	if (!cpy->buff[i])
-		return (0);
+		return (ft_free(&list, fd));
 	while (cpy->buff[i] != '\n' && cpy->buff[i])
 		i++;
 	if (!(*line = (char*)malloc(sizeof(char) * i + 1)))
@@ -81,6 +107,8 @@ int				get_next_line(int const fd, char **line)
 	*line = ft_strncpy(*line, cpy->buff, i);
 	if (cpy->buff[i] == '\n')
 		i++;
-	cpy->buff = ft_strsub(cpy->buff, i, ft_strlen(cpy->buff + i));
+	tmp = cpy->buff;
+	cpy->buff = ft_strsub(tmp, i, ft_strlen(tmp + i));
+	free(tmp);
 	return (1);
 }
