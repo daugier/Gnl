@@ -6,7 +6,7 @@
 /*   By: daugier <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/29 15:40:39 by daugier           #+#    #+#             */
-/*   Updated: 2016/06/16 20:33:34 by daugier          ###   ########.fr       */
+/*   Updated: 2016/06/19 23:30:48 by daugier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define GET_NEXT_LINE_H
 
 # define BUFF_SIZE 100
-# define MIN_FD 0
 
 # include <stdlib.h>
 # include <sys/types.h>
